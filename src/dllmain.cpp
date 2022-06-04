@@ -6,9 +6,9 @@ extern "C" unsigned __int64 __stdcall GetTickCount64(void);
 #pragma comment(lib, "kernel32.lib")
 #pragma comment(lib, "lib/ScriptHookV.lib")
 
-#include "include/main.h"
-#include "include/natives.h"
-#include "include/types.h"
+#include "inc/main.h"
+#include "inc/natives.h"
+#include "inc/types.h"
 
 #define PED_FLAG_CAN_FLY_THRU_WINDSCREEN    32
 #define PED_MODEL_FRANKLIN                  0x9B22DBAF
@@ -145,14 +145,15 @@ static const char* weaponNames[] = {
     //"WEAPON_EMPLAUNCHER",
     //"WEAPON_FERTILIZERCAN",
 
-    //"WEAPON_STINGER",          // not working
-    //"WEAPON_BZGAS",            // buggy tear gas clone from mission
-    //"WEAPON_BALL",             // chops tennisball
-    //"WEAPON_TRANQUILIZER",     // not working
-    //"WEAPON_DIGISCANNER",      // not working
-    //"GADGET_NIGHTVISION",      // not working
+    //"WEAPON_STINGER",                  // not working
+    //"WEAPON_BZGAS",                    // buggy tear gas clone from mission
+    //"WEAPON_BALL",                     // chops tennisball
+    //"WEAPON_TRANQUILIZER",             // not working
+    //"WEAPON_DIGISCANNER",              // not working
+    //"GADGET_NIGHTVISION",              // not working
+    //"WEAPON_GRENADELAUNCHER_SMOKE",    // not working
 
-    //"WEAPON_COMBATMG_MK2",     // special case (merryweather bug)
+    //"WEAPON_COMBATMG_MK2",             // special case (merryweather bug)
 };
 
 static char statNames[][30] = {
@@ -272,6 +273,8 @@ __forceinline static void give_weapons(Ped playerPed)
     if (WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
     {
         givemod(playerPed, wpn, "COMPONENT_AT_SR_SUPP_03");
+        givemod(playerPed, wpn, "COMPONENT_AT_SCOPE_THERMAL");
+        givemod(playerPed, wpn, "COMPONENT_HEAVYSNIPER_MK2_CLIP_02");
     }
 
     wpn = GAMEPLAY::GET_HASH_KEY("WEAPON_MARKSMANRIFLE_MK2");
@@ -280,6 +283,7 @@ __forceinline static void give_weapons(Ped playerPed)
         givemod(playerPed, wpn, "COMPONENT_AT_AR_SUPP");
         givemod(playerPed, wpn, "COMPONENT_AT_AR_AFGRIP_02");
         givemod(playerPed, wpn, "COMPONENT_AT_MRFL_BARREL_02");
+        givemod(playerPed, wpn, "COMPONENT_MARKSMANRIFLE_MK2_CLIP_02");
     }
 
     wpn = GAMEPLAY::GET_HASH_KEY("WEAPON_GUSENBERG");
@@ -298,6 +302,26 @@ __forceinline static void give_weapons(Ped playerPed)
     if (WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
     {
         givemod(playerPed, wpn, "COMPONENT_AT_AR_FLSH");
+    }
+
+    wpn = GAMEPLAY::GET_HASH_KEY("WEAPON_MILITARYRIFLE");
+    if (WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
+    {
+        givemod(playerPed, wpn, "COMPONENT_AT_AR_FLSH");
+        givemod(playerPed, wpn, "COMPONENT_MILITARYRIFLE_CLIP_02");
+    }
+
+    wpn = GAMEPLAY::GET_HASH_KEY("WEAPON_ASSAULTRIFLE_MK2");
+    if (WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
+    {
+        givemod(playerPed, wpn, "COMPONENT_AT_AR_FLSH");
+    }
+
+    wpn = GAMEPLAY::GET_HASH_KEY("WEAPON_SPECIALCARBINE_MK2");
+    if (WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
+    {
+        givemod(playerPed, wpn, "COMPONENT_AT_AR_FLSH");
+        givemod(playerPed, wpn, "COMPONENT_SPECIALCARBINE_MK2_CLIP_02");
     }
 
     // merryweather mission fix for combatmg MK2
