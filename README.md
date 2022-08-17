@@ -1,4 +1,4 @@
-GTA5 XHOOK v1.01 (20220604)
+GTA5 XHOOK v1.02 (20220817)
 by kebabstorm
 
 Requires [ScriptHookV](http://www.dev-c.com/gtav/scripthookv/) by Alexander Blade

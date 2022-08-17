@@ -137,6 +137,9 @@ static const char* weaponNames[] = {
     "WEAPON_NAVYREVOLVER",
     "WEAPON_CERAMICPISTOL",
     "WEAPON_STONE_HATCHET",
+    "WEAPON_HEAVYRIFLE",
+    "WEAPON_PRECISIONRIFLE",
+    "WEAPON_TACTICALRIFLE",
     "GADGET_PARACHUTE"
 
     //"WEAPON_RAYPISTOL",
@@ -145,15 +148,16 @@ static const char* weaponNames[] = {
     //"WEAPON_EMPLAUNCHER",
     //"WEAPON_FERTILIZERCAN",
 
-    //"WEAPON_STINGER",                  // not working
-    //"WEAPON_BZGAS",                    // buggy tear gas clone from mission
-    //"WEAPON_BALL",                     // chops tennisball
-    //"WEAPON_TRANQUILIZER",             // not working
-    //"WEAPON_DIGISCANNER",              // not working
-    //"GADGET_NIGHTVISION",              // not working
-    //"WEAPON_GRENADELAUNCHER_SMOKE",    // not working
+    //"WEAPON_STINGER",                 // not working
+    //"WEAPON_BZGAS",                   // buggy tear gas clone from mission
+    //"WEAPON_BALL",                    // chops tennisball
+    //"WEAPON_TRANQUILIZER",            // not working
+    //"WEAPON_DIGISCANNER",             // not working
+    //"GADGET_NIGHTVISION",             // not working
+    //"WEAPON_GRENADELAUNCHER_SMOKE",   // not working
+    //"WEAPON_METALDETECTOR",           // untested
 
-    //"WEAPON_COMBATMG_MK2",             // special case (merryweather bug)
+    //"WEAPON_COMBATMG_MK2",            // special case (merryweather bug)
 };
 
 static char statNames[][30] = {
@@ -169,13 +173,13 @@ static char statNames[][30] = {
 
 static char statNames2[][30] = {
     "SP0_SPECIAL_ABILITY_UNLOCKED",
-    "SP0_TIME_DRIVING_BICYCLE",      // SP0_STAMINA
-    "SP0_KILLS_STEALTH",             // SP0_STEALTH_ABILITY
-    "SP0_TIME_UNDERWATER",           // SP0_LUNG_CAPACITY
-    "SP0_PLANE_LANDINGS",            // SP0_FLYING_ABILITY
-    "SP0_HITS_PEDS_VEHICLES",        // SP0_SHOOTING_ABILITY
-    "SP0_UNARMED_HITS",              // SP0_STRENGTH
-    "SP0_NUMBER_NEAR_MISS",          // SP0_WHEELIE_ABILITY
+    "SP0_TIME_DRIVING_BICYCLE",         // SP0_STAMINA
+    "SP0_KILLS_STEALTH",                // SP0_STEALTH_ABILITY
+    "SP0_TIME_UNDERWATER",              // SP0_LUNG_CAPACITY
+    "SP0_PLANE_LANDINGS",               // SP0_FLYING_ABILITY
+    "SP0_HITS_PEDS_VEHICLES",           // SP0_SHOOTING_ABILITY
+    "SP0_UNARMED_HITS",                 // SP0_STRENGTH
+    "SP0_NUMBER_NEAR_MISS",             // SP0_WHEELIE_ABILITY
 };
 
 static int statAmounts[] = {
@@ -246,7 +250,7 @@ __forceinline static void give_weapons(Ped playerPed)
     {
         wpn = GAMEPLAY::GET_HASH_KEY((char*)weaponNames[i]);
         if (!WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
-            WEAPON::GIVE_DELAYED_WEAPON_TO_PED(playerPed, wpn, 1000, 0);
+            WEAPON::GIVE_DELAYED_WEAPON_TO_PED(playerPed, wpn, 999, 0);
         else if (WEAPON::IS_WEAPON_VALID(wpn))
         {
             int maxAmmo;
@@ -315,6 +319,7 @@ __forceinline static void give_weapons(Ped playerPed)
     if (WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
     {
         givemod(playerPed, wpn, "COMPONENT_AT_AR_FLSH");
+        givemod(playerPed, wpn, "COMPONENT_ASSAULTRIFLE_MK2_CLIP_02");
     }
 
     wpn = GAMEPLAY::GET_HASH_KEY("WEAPON_SPECIALCARBINE_MK2");
@@ -324,9 +329,33 @@ __forceinline static void give_weapons(Ped playerPed)
         givemod(playerPed, wpn, "COMPONENT_SPECIALCARBINE_MK2_CLIP_02");
     }
 
+    wpn = GAMEPLAY::GET_HASH_KEY("WEAPON_CARBINERIFLE_MK2");
+    if (WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
+    {
+        givemod(playerPed, wpn, "COMPONENT_AT_AR_FLSH");
+        givemod(playerPed, wpn, "COMPONENT_CARBINERIFLE_MK2_CLIP_02");
+    }
+
+    wpn = GAMEPLAY::GET_HASH_KEY("WEAPON_HEAVYRIFLE");
+    if (WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
+    {
+        givemod(playerPed, wpn, "COMPONENT_AT_AR_FLSH");
+        givemod(playerPed, wpn, "COMPONENT_HEAVYRIFLE_CLIP_02");
+    }
+
+    wpn = GAMEPLAY::GET_HASH_KEY("WEAPON_TACTICALRIFLE");
+    if (WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
+    {
+        givemod(playerPed, wpn, "COMPONENT_TACTICALRIFLE_CLIP_02");
+    }
+
     // merryweather mission fix for combatmg MK2
-    Vehicle veh = PED::GET_VEHICLE_PED_IS_USING(playerPed);
-    BOOL merryfix = (GAMEPLAY::GET_MISSION_FLAG() && veh != 0 && VEHICLE::IS_VEHICLE_MODEL(veh, VEH_MODEL_CARGOBOB3) && PED::IS_PED_MODEL(playerPed, PED_MODEL_FRANKLIN));
+    BOOL merryfix = FALSE;
+    if (GAMEPLAY::GET_MISSION_FLAG())
+    {
+        Vehicle veh = PED::GET_VEHICLE_PED_IS_USING(playerPed);
+        merryfix = (veh != 0 && VEHICLE::IS_VEHICLE_MODEL(veh, VEH_MODEL_CARGOBOB3) && PED::IS_PED_MODEL(playerPed, PED_MODEL_FRANKLIN));
+    }
     wpn = GAMEPLAY::GET_HASH_KEY("WEAPON_COMBATMG_MK2");
     if (WEAPON::HAS_PED_GOT_WEAPON(playerPed, wpn, FALSE))
     {
